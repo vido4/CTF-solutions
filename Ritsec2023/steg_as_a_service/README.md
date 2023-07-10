@@ -100,7 +100,7 @@ What is important for later - the server works as following:
 
 ### Identify vuln
 
-Since we are given patched and original binaries, the first thing to do is run `[Bindiff`](https://www.zynamics.com/bindiff.html) which is tool made for such scenario. There are various ways to use it - for me the most intuitive is using either `Ghidra` or `IDA` plugin for exporting binary metadata then running the `Bindiff` standalone binary to perform analysis.
+Since we are given patched and original binaries, the first thing to do is run [Bindiff](https://www.zynamics.com/bindiff.html) which is tool made for such scenario. There are various ways to use it - for me the most intuitive is using either `Ghidra` or `IDA` plugin for exporting binary metadata then running the `Bindiff` standalone binary to perform analysis.
 
 As I use `IDA` whenever suitable - free version of course - I used Binexport plugin for that
 
@@ -163,7 +163,7 @@ It is either doable with libc functions but I think the easier way is to do it d
 
 The most problematic is be calculating libc base address without leaking it in standard way. We also need to find outfile name which is randomized - hopefully it is saved in some predictable address in binary.
 
-There is quite a bit of ROP chain which I have written, so I will just go through the most important parts. To find proper gadgets I used `[ropr`](https://github.com/Ben-Lichtman/ropr) tool - heavily recommend it as it has nice regex search functionality, is fast (perfect for huge binaries like Linux kernel) and quite intuitive. For example searching for write to address pointed by some register looks like this (-m4 searched for max 4 instructions in this case)
+There is quite a bit of ROP chain which I have written, so I will just go through the most important parts. To find proper gadgets I used [ropr](https://github.com/Ben-Lichtman/ropr) tool - heavily recommend it as it has nice regex search functionality, is fast (perfect for huge binaries like Linux kernel) and quite intuitive. For example searching for write to address pointed by some register looks like this (-m4 searched for max 4 instructions in this case)
 
 ![Untitled9](https://github.com/vido4/CTF-solutions/assets/5321740/2bd3e7e2-b5e1-47a3-9137-c4b9d0bee8f6)
 
@@ -205,7 +205,7 @@ As I was not that smart, I went with searching for syscall gadgets in libc. From
 docker cp df70e9f779d5:/lib/x86_64-linux-gnu/libc-2.31.so libc-2.31.so
 ```
 
-Then I used `[pwninit`](https://github.com/io12/pwninit) script (`[patchelf`](https://github.com/NixOS/patchelf) works as well) to modify `steghide` binary to use provided libc instead of system one. That way all offsets on our system should match remote target.
+Then I used [pwninit](https://github.com/io12/pwninit) script ([patchelf](https://github.com/NixOS/patchelf) works as well) to modify `steghide` binary to use provided libc instead of system one. That way all offsets on our system should match remote target.
 
 In libc I found syscall gadget that I looked for
 
